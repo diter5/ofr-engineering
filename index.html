@@ -210,12 +210,11 @@
         .main-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
         .main-content::-webkit-scrollbar-thumb { background: #a01a1a; border-radius: 4px; }
 
-        /* Easter Egg Hint Styles - обновлено: справа, заметнее */
         .easter-egg-hint {
             position: fixed;
             bottom: 15px;
-            right: 15px; /* Перемещено вправо */
-            color: rgba(255, 255, 255, 0.4); /* Сделано заметнее */
+            right: 15px;
+            color: rgba(255, 255, 255, 0.4);
             cursor: help;
             font-size: 14px;
             transition: color 0.3s;
@@ -227,7 +226,7 @@
             display: none;
             position: absolute;
             bottom: 25px;
-            right: 0; /* Выравнивание по правому краю */
+            right: 0;
             background: rgba(0, 0, 0, 0.9);
             padding: 10px 15px;
             border-radius: 5px;
@@ -238,6 +237,16 @@
             box-shadow: 0 0 15px rgba(160, 26, 26, 0.5);
         }
         .easter-egg-hint:hover::after { display: block; }
+
+        /* Стили для копирования */
+        .copyable { cursor: pointer; color: #fff; transition: color 0.2s; }
+        .copyable:hover { color: #ff4d4d; }
+        #toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #a01a1a; color: white; padding: 12px 24px; border-radius: 5px;
+            opacity: 0; visibility: hidden; transition: opacity 0.5s, visibility 0.5s; z-index: 10001; pointer-events: none;
+        }
+        #toast.show { opacity: 1; visibility: visible; }
 
         @media (max-width: 950px) {
             body { flex-direction: column; overflow-y: auto; }
@@ -268,6 +277,7 @@
 </head>
 <body>
 
+    <div id="toast">Текст скопирован в буфер обмена</div>
     <canvas id="effect-canvas"></canvas>
 
     <div class="sidebar">
@@ -293,8 +303,8 @@
                     <h1 class="hero-title">ОРДЕН ПЫЛАЮЩЕЙ РОЗЫ</h1>
                     <h2 class="hero-subtitle">Инженерный Отдел</h2>
                     <div class="site-info-block">
-                        <p>Владелец сайта; "diteryx".</p>
-                        <p>Сайт был опубликован; 09.06.2026.</p>
+                        <p>Владелец сайта: "diteryx".</p>
+                        <p>Сайт был опубликован: 09.06.2026.</p>
                         <p>Дизайн был взят с <a href="https://sites.google.com/view/ordenflamingrose/%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F-%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0" target="_blank">данного сайта</a>.</p>
                     </div>
                 </div>
@@ -329,6 +339,7 @@
                     <p>
                         <span class="role">Инженер</span> - Flint<br>
                         <span class="role">Инженер</span> - USSR113<br>
+                        <span class="role">Инженер</span> - ImJustTema<br>
                         <span class="role">Инженер</span> - Larant_s<br>
                         <span class="role">Инженер</span> - fikusetski<br>
                         <span class="role">Инженер</span> - MrV1me<br>
@@ -337,7 +348,6 @@
                         <span class="role">Инженер</span> - ZXCcursed<br>
                         <span class="role">Инженер</span> - Dowuk5305<br>
                         <span class="role">Инженер</span> - m4layaa<br>
-                        <span class="role">Инженер</span> - ImJustTema<br>
                         <span class="role">Инженер</span> - Varkgar
                     </p>
                     <div class="divider"></div>
@@ -370,26 +380,26 @@
             <div class="info-box">
                 <h3>Координаты ферм</h3>
                 <div style="line-height: 2.2;">
-                    <div><strong style="color: #ff4d4d;">Дерево</strong> - x:229 z:-7370 [overworld]</div>
-                    <div><strong style="color: #ff4d4d;">Железо + Морковки + Картошки</strong> - x:86 z:-7480 [overworld]</div>
-                    <div><strong style="color: #ff4d4d;">Золота x2</strong> - x:1312 z:10051 / x:287 z:-7115 [overworld]</div>
-                    <div><strong style="color: #ff4d4d;">Рейдов х2</strong> - x:1311 z:8961 / x:1719 z:8887 [overworld]</div>
-                    <div><strong style="color: #ff4d4d;">Ламинарии</strong> - x:154 z:-7364 [overworld]</div>
-                    <div><strong style="color: #ff4d4d;">Жители</strong> - x:1182 z:8496 [overworld]</div>
-                    <div><strong style="color: #ff4d4d;">Бутылочки рейдов</strong> - x:1383 z:8454 [overworld]</div>
-                    <div><strong style="color: #ff4d4d;">Эфриты</strong> - x:763 z:-371 [the_nether]</div>
-                    <div><strong style="color: #ff4d4d;">Визер-скелеты</strong> - x:761 z:-318 [the_nether]</div>
-                    <div><strong style="color: #ff4d4d;">Хоглины</strong> - x:124 z:-898 [the_nether]</div>
-                    <div><strong style="color: #ff4d4d;">Бартеринг х2</strong> - x:204 z:-929 / x:26 z:-927 [the_nether]</div>
-                    <div><strong style="color: #ff4d4d;">Ключики + Заряды ветра</strong> - x:272 z:-7607 [overworld]</div>
-                    <div><strong style="color: #ff4d4d;">Шалкера</strong> - x:-8 z:-7386 [overworld]</div>
-                    <div><strong style="color: #ff4d4d;">Трейд-холл</strong> - x:1313 z:8497 [overworld]</div>
-                    <div><strong style="color: #ff4d4d;">Мобо-ферма</strong> - x:1248 z:9566 [overworld]</div>
-                    <div><strong style="color: #ff4d4d;">Чешуйницы</strong> - x:1221 z:9454 [overworld]</div>
-                    <div><strong style="color: #ff4d4d;">Порох х2</strong> - x:1 z:-7310 / x:327 z:-7289 [overworld]</div>
-                    <div><strong style="color: #ff4d4d;">Призмарин</strong> - x:207 z:-6865 [overworld]</div>
-                    <div><strong style="color: #ff4d4d;">Трезубцы</strong> - x:655 z:-7803 [overworld]</div>
-                    <div><strong style="color: #ff4d4d;">Обсидиан</strong> - x:276 z:-7469 [overworld]</div>
+                    <div class="copyable" onclick="copyText('229 -7370')"><strong style="color: #ff4d4d;">Дерево</strong> - 229 -7370 [overworld]</div>
+                    <div class="copyable" onclick="copyText('86 -7480')"><strong style="color: #ff4d4d;">Железо + Морковки + Картошки</strong> - 86 -7480 [overworld]</div>
+                    <div class="copyable" onclick="copyText('1312 10051 / 287 -7115')"><strong style="color: #ff4d4d;">Золота x2</strong> - 1312 10051 / 287 -7115 [overworld]</div>
+                    <div class="copyable" onclick="copyText('1311 8961 / 1719 8887')"><strong style="color: #ff4d4d;">Рейдов х2</strong> - 1311 8961 / 1719 8887 [overworld]</div>
+                    <div class="copyable" onclick="copyText('154 -7364')"><strong style="color: #ff4d4d;">Ламинарии</strong> - 154 -7364 [overworld]</div>
+                    <div class="copyable" onclick="copyText('1182 8496')"><strong style="color: #ff4d4d;">Жители</strong> - 1182 8496 [overworld]</div>
+                    <div class="copyable" onclick="copyText('1383 8454')"><strong style="color: #ff4d4d;">Бутылочки рейдов</strong> - 1383 8454 [overworld]</div>
+                    <div class="copyable" onclick="copyText('763 -371')"><strong style="color: #ff4d4d;">Эфриты</strong> - 763 -371 [the_nether]</div>
+                    <div class="copyable" onclick="copyText('761 -318')"><strong style="color: #ff4d4d;">Визер-скелеты</strong> - 761 -318 [the_nether]</div>
+                    <div class="copyable" onclick="copyText('124 -898')"><strong style="color: #ff4d4d;">Хоглины</strong> - 124 -898 [the_nether]</div>
+                    <div class="copyable" onclick="copyText('204 -929 / 26 -927')"><strong style="color: #ff4d4d;">Бартеринг х2</strong> - 204 -929 / 26 -927 [the_nether]</div>
+                    <div class="copyable" onclick="copyText('272 -7607')"><strong style="color: #ff4d4d;">Ключики + Заряды ветра</strong> - 272 -7607 [overworld]</div>
+                    <div class="copyable" onclick="copyText('-8 -7386')"><strong style="color: #ff4d4d;">Шалкера</strong> - -8 -7386 [overworld]</div>
+                    <div class="copyable" onclick="copyText('1313 8497')"><strong style="color: #ff4d4d;">Трейд-холл</strong> - 1313 8497 [overworld]</div>
+                    <div class="copyable" onclick="copyText('1248 9566')"><strong style="color: #ff4d4d;">Мобо-ферма</strong> - 1248 9566 [overworld]</div>
+                    <div class="copyable" onclick="copyText('1221 9454')"><strong style="color: #ff4d4d;">Чешуйницы</strong> - 1221 9454 [overworld]</div>
+                    <div class="copyable" onclick="copyText('1 -7310 / 327 -7289')"><strong style="color: #ff4d4d;">Порох х2</strong> - 1 -7310 / 327 -7289 [overworld]</div>
+                    <div class="copyable" onclick="copyText('207 -6865')"><strong style="color: #ff4d4d;">Призмарин</strong> - 207 -6865 [overworld]</div>
+                    <div class="copyable" onclick="copyText('655 -7803')"><strong style="color: #ff4d4d;">Трезубцы</strong> - 655 -7803 [overworld]</div>
+                    <div class="copyable" onclick="copyText('276 -7469')"><strong style="color: #ff4d4d;">Обсидиан</strong> - 276 -7469 [overworld]</div>
                 </div>
                 <hr style="border: 0; border-top: 1px solid #ff4d4d; margin: 30px 0;">
                 <p style="color: #ff4d4d; font-weight: bold; text-align: center;">ВСЕ ФЕРМЫ НАХОДЯТЬСЯ В МФ!</p>
@@ -407,6 +417,13 @@
             menuItems.forEach(item => item.classList.remove('active'));
             const targetMenuItem = document.getElementById('menu-' + sectionId);
             if (targetMenuItem) targetMenuItem.classList.add('active');
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text);
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 2000);
         }
 
         const clickCanvas = document.getElementById('effect-canvas');
