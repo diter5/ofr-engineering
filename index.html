@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OFR | Engineering</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-user-drag: none;
+            user-drag: none;
+        }
+
+        body {
+            font-family: 'Comfortaa', cursive;
+            background-color: #000;
+            color: white;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #effect-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        #bg-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 40px;
+            border-right: 2px solid #ddd;
+            z-index: 10;
+            flex-shrink: 0;
+            animation: basePageLoadFade 1s ease-out forwards;
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 50px;
+            width: 100%;
+            padding: 0 20px;
+            cursor: pointer;
+        }
+
+        .main-content {
+            flex: 1;
+            position: relative;
+            background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), 
+                        url('https://i.imgur.com/0J8cX8G.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            padding: 80px 5% 50px 5%; 
+            overflow-y: auto;
+            z-index: 5;
+            animation: basePageLoadFade 1s ease-out forwards;
+        }
+
+        .site-name {
+            color: #a01a1a;
+            font-weight: bold;
+            font-size: 18px;
+            letter-spacing: 0px; 
+            backface-visibility: hidden;
+            animation: pulseGlow 4s ease-in-out infinite;
+            transition: color 0.4s ease, text-shadow 0.4s ease, letter-spacing 0.3s ease;
+        }
+
+        .logo-area:hover .site-name { 
+            animation-play-state: paused; 
+            color: #ffdb4d; 
+            letter-spacing: 0.5px; 
+            text-shadow: 0 0 20px rgba(255, 219, 77, 0.8), 
+                         0 0 8px rgba(255, 77, 77, 0.6);
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { color: #a01a1a; text-shadow: 0 0 4px rgba(160, 26, 26, 0.2); }
+            50% { color: #cd2323; text-shadow: 0 0 14px rgba(205, 35, 35, 0.5); }
+        }
+
+        .nav-menu { width: 100%; }
+
+        .nav-item {
+            padding: 15px 30px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            font-size: 16px;
+            list-style: none;
+            position: relative;
+        }
+
+        .nav-item:hover { background-color: #f5f5f5; color: #a01a1a; padding-left: 42px; }
+
+        .nav-item.active {
+            background-color: #f5f5f5;
+            color: #a01a1a;
+            font-weight: bold;
+            padding-left: 40px;
+            border-left: 4px solid #a01a1a;
+        }
+
+        .home-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 80px;
+            width: 100%;
+            max-width: 1600px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 6;
+        }
+
+        .logo-visual {
+            width: 350px; 
+            height: 350px; 
+            position: relative;
+            left: -200px; 
+            transition: all 0.4s ease;
+            filter: drop-shadow(0 0 10px rgba(160, 26, 26, 0.5));
+            cursor: pointer;
+            -webkit-user-drag: none;
+            user-drag: none;
+        }
+
+        .logo-visual:hover { transform: scale(1.1); filter: drop-shadow(0 0 25px rgba(255, 77, 77, 0.8)); }
+
+        .home-text-block { flex: 1; min-width: 350px; }
+
+        .hero-title { font-size: 40px; color: white; font-weight: 700; }
+        .hero-subtitle { font-size: 35px; color: #bdc3c7; margin-top: 10px; }
+        
+        .site-info-block { font-size: 14px; color: #888; margin-top: 30px; line-height: 1.8; }
+        .site-info-block a { color: #888; text-decoration: underline; transition: color 0.3s ease; }
+        .site-info-block a:hover { color: #ff4d4d; }
+
+        .content-section { display: none; animation: fadeIn 0.5s ease; position: relative; z-index: 6; }
+        .content-section.active { display: block; }
+
+        .info-box {
+            max-width: 900px;
+            background: rgba(12, 5, 5, 0.75);
+            padding: 40px;
+            border-radius: 4px;
+            line-height: 1.6;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(160, 26, 26, 0.3);
+            margin-top: 20px;
+            -webkit-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+            animation: boxFireGlow 6s ease-in-out infinite;
+        }
+
+        @keyframes boxFireGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(160, 26, 26, 0.25); }
+            50% { box-shadow: 0 0 35px rgba(205, 35, 35, 0.45); border-color: rgba(205, 35, 35, 0.5); }
+        }
+
+        .info-box h3 { color: #ff4d4d; margin-bottom: 20px; font-size: 28px; border-bottom: 1px solid #ff4d4d; display: inline-block; padding-bottom: 5px; }
+        .info-box h4 { color: #ff4d4d; margin: 25px 0 10px 0; font-size: 22px; }
+        .info-box p, .info-box li { font-size: 18px; color: #eee; margin-bottom: 12px; }
+
+        .important-note { background: rgba(160, 26, 26, 0.2); padding: 15px; border-left: 4px solid #a01a1a; margin-bottom: 25px; }
+        .rule-label { color: #ff4d4d; font-weight: bold; }
+        .exception-label { color: #bdc3c7; font-weight: bold; font-style: italic; }
+        .staff-list { font-size: 20px; }
+        .role { color: #ff4d4d; font-weight: bold; }
+        .divider { border: none; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0; width: 300px; }
+
+        @keyframes basePageLoadFade { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .main-content { scrollbar-width: thin; scrollbar-color: #a01a1a rgba(0,0,0,0.3); }
+        .main-content::-webkit-scrollbar { width: 8px; }
+        .main-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        .main-content::-webkit-scrollbar-thumb { background: #a01a1a; border-radius: 4px; }
+
+        @media (max-width: 950px) {
+            body { flex-direction: column; overflow-y: auto; }
+            .sidebar { width: 100%; height: auto; padding-top: 20px; padding-bottom: 10px; border-right: none; border-bottom: 2px solid #ddd; }
+            .logo-area { margin-bottom: 20px; }
+            .nav-menu { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; padding: 0 10px; }
+            .nav-item { padding: 10px 15px; font-size: 14px; border-radius: 5px; }
+            .nav-item:hover, .nav-item.active { padding-left: 15px; border-left: none; background-color: #f5f5f5; }
+            .nav-item.active { border-bottom: 3px solid #a01a1a; }
+            
+            .main-content { padding: 40px 20px; overflow-y: visible; background-attachment: scroll; }
+            .home-container { flex-direction: column; text-align: center; gap: 20px; }
+            
+            .logo-visual { 
+                position: static; 
+                width: 200px; 
+                height: 200px; 
+                margin: 0 auto; 
+                left: 0;
+            }
+            
+            .hero-title { font-size: 24px; }
+            .hero-subtitle { font-size: 20px; }
+            .site-info-block { font-size: 13px; }
+            .info-box { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="effect-canvas"></canvas>
+
+    <div class="sidebar">
+        <div class="logo-area" onclick="showSection('home')">
+            <div class="site-name">OFR | Engineering</div>
+        </div>
+        
+        <ul class="nav-menu">
+            <li id="menu-info" class="nav-item" onclick="showSection('info')">1. Информация</li>
+            <li id="menu-staff" class="nav-item" onclick="showSection('staff')">2. Состав</li>
+            <li id="menu-rules" class="nav-item" onclick="showSection('rules')">3. Правила</li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <canvas id="bg-canvas"></canvas>
+        
+        <div id="home" class="content-section active">
+            <div class="home-container">
+                <div class="home-text-block">
+                    <h1 class="hero-title">ОРДЕН ПЫЛАЮЩЕЙ РОЗЫ</h1>
+                    <h2 class="hero-subtitle">Инженерный Отдел</h2>
+                    <div class="site-info-block">
+                        <p>Владелец сайта; "diteryx".</p>
+                        <p>Сайт был опубликован; 09.06.2026.</p>
+                        <p>Дизайн был взят с <a href="https://sites.google.com/view/ordenflamingrose/%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F-%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0" target="_blank">данного сайта</a>.</p>
+                    </div>
+                </div>
+                <img src="https://i.imgur.com/iiBR3Rx.png" alt="Logo" class="logo-visual" draggable="false">
+            </div>
+        </div>
+
+        <div id="info" class="content-section">
+            <div class="info-box">
+                <h3>Информация об отделе</h3>
+                <p>Мы обеспечиваем клан ресурсами, занимаемся автоматизацией и инфраструктурой.</p>
+                <p><strong>Какими видами работ мы занимаемся:</strong></p>
+                <ul>
+                    <li>стройка ферм и механизмов;</li>
+                    <li>починка и модернизация ферм;</li>
+                    <li>прокладка дорог;</li>
+                    <li>строительство уже спроектированных зданий.</li>
+                </ul>
+                <p>У инженеров будет <span style="color: #ff4d4d; font-weight: bold;">3 отчёта</span>. Каждую неделю заслуги отсылаются выше. По решению Магистра выдается награда или наказание.</p>
+            </div>
+        </div>
+
+        <div id="staff" class="content-section">
+            <div class="info-box">
+                <h3>Состав отдела</h3>
+                <div class="staff-list">
+                    <p><span class="role">Глава отдела</span> - PanPahan</p>
+                    <div class="divider"></div>
+                    <p><span class="role">Заместитель отдела</span> - diteryx</p>
+                    <p><span class="role">Заместитель отдела</span> - zqalex</p>
+                    <div class="divider"></div>
+                    <p>
+                        <span class="role">Инженер</span> - Flint<br>
+                        <span class="role">Инженер</span> - USSR113<br>
+                        <span class="role">Инженер</span> - AkiraaMC<br>
+                        <span class="role">Инженер</span> - Larant_s<br>
+                        <span class="role">Инженер</span> - fikusetski<br>
+                        <span class="role">Инженер</span> - MrV1me<br>
+                        <span class="role">Инженер</span> - GigaChad2271327<br>
+                        <span class="role">Инженер</span> - SUSMASTER228777<br>
+                        <span class="role">Инженер</span> - ZXCcursed<br>
+                        <span class="role">Инженер</span> - Dowuk5305<br>
+                        <span class="role">Инженер</span> - m4layaa<br>
+                        <span class="role">Инженер</span> - Varkgar
+                    </p>
+                    <div class="divider"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="rules" class="content-section">
+            <div class="info-box">
+                <h3>Регламент Инженерного Отдела</h3>
+                <div class="important-note">
+                    <p><strong>Важно:</strong> В нашем отделе действуют все общие правила, прописанные в Discord-канале «OFR». Ниже приведены дополнительные инструкции, обязательные для исполнения всеми инженерами.</p>
+                </div>
+                <h4>1. Эксплуатация ферм</h4>
+                <p>Перед началом работы с любой фермой убедитесь, что вы полностью понимаете принцип её устройства.</p>
+                <p><span class="rule-label">Правило:</span> Если вы не знакомы с механизмом, вы обязаны проконсультироваться с Главой инженеров или его Заместителем.</p>
+                <p><span class="exception-label">Исключение:</span> Если вы на 100% уверены в своих знаниях и умеете пользоваться данной фермой, предварительный опрос не требуется.</p>
+                <h4>2. Управление ресурсами</h4>
+                <p>Склад инженерного отдела — это наш общий склад для реализации важных проектов.</p>
+                <p><span class="rule-label">Запрещено:</span> Брать любые ресурсы с инженерного склада без предварительного согласования.</p>
+                <p><span class="rule-label">Порядок действий:</span> Для получения материалов необходимо запросить разрешение у Главы отдела или его Заместителя.</p>
+                <h4>3. Строительство новых ферм</h4>
+                <p>Мы приветствуем инициативу, но каждая постройка должна быть целесообразной и безопасной.</p>
+                <p><span class="rule-label">Правило:</span> Перед началом строительства любой фермы вы должны получить одобрение от Главы инженеров.</p>
+                <p><span class="exception-label">Обоснование:</span> Некоторые виды ферм могут быть недопустимы или запрещены правилами сервера «Sakeva» (например, из-за нагрузки на сервер или баланса).</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => section.classList.remove('active'));
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) targetSection.classList.add('active');
+            const menuItems = document.querySelectorAll('.nav-item');
+            menuItems.forEach(item => item.classList.remove('active'));
+            const targetMenuItem = document.getElementById('menu-' + sectionId);
+            if (targetMenuItem) targetMenuItem.classList.add('active');
+        }
+
+        const clickCanvas = document.getElementById('effect-canvas');
+        const clickCtx = clickCanvas.getContext('2d');
+        let ringsArray = [];
+        const bgCanvas = document.getElementById('bg-canvas');
+        const bgCtx = bgCanvas.getContext('2d');
+        let particlesArray = [];
+        let audioCtx = null;
+
+        // Переменные для звука
+        let clickCount = 0;
+        const specialSound = new Audio('negrs.ogg'); 
+
+        function playMechanicalClickSound() {
+            try {
+                if (!audioCtx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = new AudioContext();
+                }
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const mainGain = audioCtx.createGain();
+                osc.type = 'triangle'; 
+                osc.frequency.setValueAtTime(150, now); 
+                osc.frequency.exponentialRampToValueAtTime(90, now + 0.045);
+                mainGain.gain.setValueAtTime(0.7, now); 
+                mainGain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+                const lpFilter = audioCtx.createBiquadFilter();
+                lpFilter.type = 'lowpass';
+                lpFilter.frequency.value = 1200; 
+                osc.connect(lpFilter);
+                lpFilter.connect(mainGain);
+                mainGain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(now + 0.045);
+            } catch (e) { console.log("Audio Error:", e); }
+        }
+
+        function resizeCanvases() {
+            clickCanvas.width = window.innerWidth;
+            clickCanvas.height = window.innerHeight;
+            const mainContent = document.querySelector('.main-content');
+            bgCanvas.width = mainContent.clientWidth;
+            bgCanvas.height = mainContent.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvases);
+        setTimeout(resizeCanvases, 100);
+
+        class ClickRing {
+            constructor(x, y) { this.x = x; this.y = y; this.radius = 2; this.maxRadius = 45; this.alpha = 1; this.speed = 1.8; }
+            update() { this.radius += this.speed; this.alpha = 1 - (this.radius / this.maxRadius); }
+            draw() {
+                if (this.alpha <= 0) return;
+                clickCtx.save();
+                clickCtx.globalAlpha = this.alpha;
+                clickCtx.beginPath();
+                clickCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                clickCtx.lineWidth = 2;
+                clickCtx.strokeStyle = 'rgba(255, 77, 77, 0.9)';
+                clickCtx.shadowBlur = 12;
+                clickCtx.shadowColor = 'rgba(160, 26, 26, 1)';
+                clickCtx.stroke();
+                clickCtx.restore();
+            }
+        }
+
+        class BgParticle {
+            constructor() { this.reset(); this.y = Math.random() * bgCanvas.height; }
+            reset() { this.x = Math.random() * bgCanvas.width; this.y = -10; this.size = Math.random() * 2.8 + 0.4; this.speedY = (this.size * 0.3) + Math.random() * 0.4 + 0.2; this.speedX = (Math.random() - 0.5) * 0.4; this.alpha = Math.random() * 0.6 + 0.15; }
+            update() { this.y += this.speedY; this.x += this.speedX; if (this.y > bgCanvas.height || this.x < 0 || this.x > bgCanvas.width) this.reset(); }
+            draw() {
+                bgCtx.save();
+                bgCtx.globalAlpha = this.alpha;
+                bgCtx.beginPath();
+                bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                bgCtx.fillStyle = '#ff4d4d';
+                bgCtx.shadowBlur = this.size * 2.5;
+                bgCtx.shadowColor = '#a01a1a';
+                bgCtx.fill();
+                bgCtx.restore();
+            }
+        }
+
+        function initBgParticles() {
+            particlesArray = [];
+            const particleCount = Math.min(180, Math.floor(window.innerWidth / 10));
+            for (let i = 0; i < particleCount; i++) particlesArray.push(new BgParticle());
+        }
+        
+        window.addEventListener('load', () => { resizeCanvases(); initBgParticles(); });
+        
+        window.addEventListener('click', function(event) {
+            ringsArray.push(new ClickRing(event.clientX, event.clientY));
+            
+            clickCount++;
+            if (clickCount === 35) {
+                specialSound.currentTime = 0;
+                specialSound.play().catch(e => console.log("Блокировка:", e));
+                clickCount = 0; // Сброс счетчика
+            } else {
+                playMechanicalClickSound();
+            }
+        });
+
+        function animate() {
+            clickCtx.clearRect(0, 0, clickCanvas.width, clickCanvas.height);
+            for (let i = 0; i < ringsArray.length; i++) {
+                ringsArray[i].update();
+                ringsArray[i].draw();
+                if (ringsArray[i].radius >= ringsArray[i].maxRadius) { ringsArray.splice(i, 1); i--; }
+            }
+            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+            if (particlesArray.length === 0 && bgCanvas.width > 0) initBgParticles();
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
