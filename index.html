@@ -46,7 +46,6 @@
             z-index: 1;
         }
 
-        /* Навигация */
         .nav-container {
             position: fixed;
             top: 20px;
@@ -55,6 +54,8 @@
             display: flex;
             gap: 15px;
             z-index: 20;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .nav-item {
@@ -70,6 +71,7 @@
             overflow: hidden;
         }
 
+        /* Новый эффект переливания */
         .nav-item::before {
             content: '';
             position: absolute;
@@ -77,16 +79,24 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: conic-gradient(transparent, rgba(255, 255, 255, 0.2), transparent);
-            animation: rotate 4s linear infinite;
+            background: conic-gradient(transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: rotate 3s linear infinite;
             opacity: 0;
             transition: opacity 0.3s;
+        }
+        
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            background: rgba(40, 40, 40, 0.95);
+            border-radius: 49px;
+            z-index: -1;
         }
 
         .nav-item:hover, .nav-item.active {
             color: #fff;
-            border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
         }
 
         .nav-item:hover::before, .nav-item.active::before {
@@ -106,7 +116,6 @@
             animation: basePageLoadFade 1s ease-out forwards;
         }
 
-        /* Остальной контент */
         .home-container {
             display: flex;
             align-items: center;
@@ -181,6 +190,16 @@
             opacity: 0; visibility: hidden; transition: opacity 0.5s, visibility 0.5s; z-index: 10001;
         }
         #toast.show { opacity: 1; visibility: visible; }
+
+        /* Мобильная адаптация */
+        @media (max-width: 768px) {
+            .home-container { gap: 30px; }
+            .logo-visual { width: 200px; height: 200px; }
+            .hero-title { font-size: 28px; }
+            .hero-subtitle { font-size: 22px; }
+            .nav-container { top: 10px; gap: 5px; }
+            .nav-item { padding: 8px 12px; font-size: 14px; }
+        }
     </style>
 </head>
 <body>
