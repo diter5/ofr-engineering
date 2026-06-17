@@ -183,9 +183,38 @@
         }
         #toast.show { opacity: 1; visibility: visible; }
 
+        /* Burger Menu Styles */
+        .burger-menu {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            cursor: pointer;
+            font-size: 30px;
+            color: white;
+            background: rgba(40, 40, 40, 0.8);
+            padding: 5px 15px;
+            border-radius: 10px;
+        }
+
         @media (max-width: 768px) {
-            .nav-container { position: relative; top: 0; left: 0; transform: none; margin-bottom: 30px; }
-            .main-content { padding-top: 20px; }
+            .burger-menu { display: block; }
+            .nav-container { 
+                display: none; 
+                flex-direction: column; 
+                top: 70px; 
+                left: 20px; 
+                transform: none; 
+                background: rgba(20, 20, 20, 0.95);
+                padding: 10px;
+                border-radius: 10px;
+                width: 200px;
+            }
+            .nav-container.active { display: flex; }
+            .nav-item { width: 100%; margin-bottom: 5px; }
+            .main-content { padding-top: 80px; }
+            .logo-visual { pointer-events: none; }
         }
     </style>
 </head>
@@ -194,7 +223,9 @@
     <div id="toast">Текст скопирован в буфер обмена</div>
     <canvas id="effect-canvas"></canvas>
 
-    <div class="nav-container">
+    <div class="burger-menu" onclick="toggleNav()">☰</div>
+
+    <div class="nav-container" id="nav-menu">
         <div class="nav-item" onclick="showSection('home')" id="menu-home">Меню</div>
         <div class="nav-item" onclick="showSection('info')" id="menu-info">Информация</div>
         <div class="nav-item" onclick="showSection('staff')" id="menu-staff">Состав</div>
@@ -316,17 +347,24 @@
     </div>
 
     <script>
+        function toggleNav() {
+            document.getElementById('nav-menu').classList.toggle('active');
+        }
+
         function showSection(sectionId) {
             const sections = document.querySelectorAll('.content-section');
             sections.forEach(section => section.classList.remove('active'));
             const targetSection = document.getElementById(sectionId);
             if (targetSection) targetSection.classList.add('active');
+            
             const menuItems = document.querySelectorAll('.nav-item');
             menuItems.forEach(item => item.classList.remove('active'));
             const targetMenuItem = document.getElementById('menu-' + sectionId);
             if (targetMenuItem) targetMenuItem.classList.add('active');
+            
             if (window.innerWidth <= 768) {
                 document.querySelector('.main-content').scrollTop = 0;
+                document.getElementById('nav-menu').classList.remove('active');
             }
         }
 
